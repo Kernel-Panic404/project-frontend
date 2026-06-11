@@ -34,5 +34,33 @@ export const api = {
         
         if (!response.ok) throw new Error('Failed to schedule session');
         return await response.json();
+    },
+
+    // RF-06: Post-Tutoring Registration
+    postSessionRecord: async (recordData) => {
+        const response = await fetch(`${API_URL}/tutorias/session-records/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(recordData)
+        });
+        if (!response.ok) throw new Error('Failed to create session record');
+        return await response.json();
+    },
+
+    postAttendance: async (attendanceData) => {
+        const response = await fetch(`${API_URL}/tutorias/attendance/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(attendanceData)
+        });
+        if (!response.ok) throw new Error('Failed to record attendance');
+        return await response.json();
+    },
+
+    // RF-10: Student History
+    getStudentHistory: async (studentId) => {
+        const response = await fetch(`${API_URL}/tutorias/history/student/${studentId}/`);
+        if (!response.ok) throw new Error('Failed to fetch student history');
+        return await response.json();
     }
 };
