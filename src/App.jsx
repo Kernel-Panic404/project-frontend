@@ -2,30 +2,114 @@ import React, { useState } from 'react';
 import { TutoringForm } from './components/TutoringForm';
 import { PostTutoringForm } from './components/PostTutoringForm';
 import { StudentHistory } from './components/StudentHistory';
+import { TutorSchedule } from './components/TutorSchedule';
+import { StudentProgress } from './components/StudentProgress';
+import { StudentQuestionnaire } from './components/StudentQuestionnaire';
+import './App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('schedule');
 
   return (
     <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: '2rem' }}>
-      <div style={{ display: 'flex', gap: '1rem', background: 'rgba(30, 41, 59, 0.7)', padding: '0.5rem', borderRadius: '16px', backdropFilter: 'blur(16px)' }}>
+      <div style={{ 
+        display: 'flex', 
+        gap: '0.5rem', 
+        flexWrap: 'wrap', 
+        justifyContent: 'center', 
+        background: 'rgba(30, 41, 59, 0.7)', 
+        padding: '0.5rem', 
+        borderRadius: '16px', 
+        backdropFilter: 'blur(16px)' 
+      }}>
         <button 
-            style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', border: 'none', background: activeTab === 'schedule' ? '#4F46E5' : 'transparent', color: 'white', cursor: 'pointer', transition: 'all 0.3s' }}
-            onClick={() => setActiveTab('schedule')}
+          style={{ 
+            padding: '0.75rem 1.5rem', 
+            borderRadius: '12px', 
+            border: 'none', 
+            background: activeTab === 'schedule' ? '#4F46E5' : 'transparent', 
+            color: 'white', 
+            cursor: 'pointer', 
+            transition: 'all 0.3s' 
+          }}
+          onClick={() => setActiveTab('schedule')}
         >
-            Agendar Tutoría
+          📅 Schedule
         </button>
+        
         <button 
-            style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', border: 'none', background: activeTab === 'post' ? '#4F46E5' : 'transparent', color: 'white', cursor: 'pointer', transition: 'all 0.3s' }}
-            onClick={() => setActiveTab('post')}
+          style={{ 
+            padding: '0.75rem 1.5rem', 
+            borderRadius: '12px', 
+            border: 'none', 
+            background: activeTab === 'post' ? '#4F46E5' : 'transparent', 
+            color: 'white', 
+            cursor: 'pointer', 
+            transition: 'all 0.3s' 
+          }}
+          onClick={() => setActiveTab('post')}
         >
-            Registro Post-Tutoría
+          📝 Post-Tutoring
         </button>
+        
         <button 
-            style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', border: 'none', background: activeTab === 'history' ? '#4F46E5' : 'transparent', color: 'white', cursor: 'pointer', transition: 'all 0.3s' }}
-            onClick={() => setActiveTab('history')}
+          style={{ 
+            padding: '0.75rem 1.5rem', 
+            borderRadius: '12px', 
+            border: 'none', 
+            background: activeTab === 'history' ? '#4F46E5' : 'transparent', 
+            color: 'white', 
+            cursor: 'pointer', 
+            transition: 'all 0.3s' 
+          }}
+          onClick={() => setActiveTab('history')}
         >
-            Historial Estudiante
+          📚 History
+        </button>
+        
+        <button 
+          style={{ 
+            padding: '0.75rem 1.5rem', 
+            borderRadius: '12px', 
+            border: 'none', 
+            background: activeTab === 'schedule' ? '#4F46E5' : 'transparent', 
+            color: 'white', 
+            cursor: 'pointer', 
+            transition: 'all 0.3s' 
+          }}
+          onClick={() => setActiveTab('schedule')}
+        >
+          📅 Schedule
+        </button>
+        
+        <button 
+          style={{ 
+            padding: '0.75rem 1.5rem', 
+            borderRadius: '12px', 
+            border: 'none', 
+            background: activeTab === 'progress' ? '#4F46E5' : 'transparent', 
+            color: 'white', 
+            cursor: 'pointer', 
+            transition: 'all 0.3s' 
+          }}
+          onClick={() => setActiveTab('progress')}
+        >
+          📊 Grades
+        </button>
+        
+        <button 
+          style={{ 
+            padding: '0.75rem 1.5rem', 
+            borderRadius: '12px', 
+            border: 'none', 
+            background: activeTab === 'questionnaire' ? '#4F46E5' : 'transparent', 
+            color: 'white', 
+            cursor: 'pointer', 
+            transition: 'all 0.3s' 
+          }}
+          onClick={() => setActiveTab('questionnaire')}
+        >
+          📋 Questionnaire
         </button>
       </div>
 
@@ -33,6 +117,9 @@ function App() {
         {activeTab === 'schedule' && <TutoringForm />}
         {activeTab === 'post' && <PostTutoringForm />}
         {activeTab === 'history' && <StudentHistory />}
+        {activeTab === 'schedule' && <TutorSchedule />}
+        {activeTab === 'progress' && <StudentProgress />}
+        {activeTab === 'questionnaire' && <StudentQuestionnaire />}
       </div>
     </main>
   );
