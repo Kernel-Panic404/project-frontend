@@ -22,7 +22,7 @@ export const StudentProgress = () => {
             setStatus('success');
         } catch (error) {
             setStatus('error');
-            console.error('Error:', error);
+            console.error('Error fetching progress:', error);
             alert('Error fetching student progress');
         } finally {
             setLoading(false);
