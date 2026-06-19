@@ -1,10 +1,10 @@
 const API_URL = 'http://localhost:8000/api';
 
 export const api = {
-    // We will use basic fetch since we don't need heavy dependencies like axios for a simple clean form
+    // ============================================
+    // EXISTING METHODS
+    // ============================================
     getTutors: async () => {
-        // This should ideally hit an endpoint returning only tutors. 
-        // For now we assume a general users endpoint filtering by tutor role, or fetching from /tutor-subjects/
         const response = await fetch(`${API_URL}/users/`);
         if (!response.ok) throw new Error('Failed to fetch tutors');
         const users = await response.json();
@@ -31,12 +31,10 @@ export const api = {
             },
             body: JSON.stringify(sessionData)
         });
-        
         if (!response.ok) throw new Error('Failed to schedule session');
         return await response.json();
     },
 
-    // RF-06: Post-Tutoring Registration
     postSessionRecord: async (recordData) => {
         const response = await fetch(`${API_URL}/tutorias/session-records/`, {
             method: 'POST',
@@ -57,10 +55,96 @@ export const api = {
         return await response.json();
     },
 
-    // RF-10: Student History
     getStudentHistory: async (studentId) => {
         const response = await fetch(`${API_URL}/tutorias/history/student/${studentId}/`);
         if (!response.ok) throw new Error('Failed to fetch student history');
+        return await response.json();
+    },
+
+    // ============================================
+    // SCRUM-14 & SCRUM-15: Tutor Schedule
+    // ============================================
+    getTutorSchedule: async (tutorId) => {
+        const response = await fetch(`${API_URL}/tutorias/availability/?tutor=${tutorId}`);
+        if (!response.ok) throw new Error('Failed to fetch tutor schedule');
+        return await response.json();
+    },
+
+    addTutorAvailability: async (data) => {
+        const response = await fetch(`${API_URL}/tutorias/availability/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Failed to add availability');
+        return await response.json();
+    },
+
+    deleteTutorAvailability: async (slotId) => {
+        const response = await fetch(`${API_URL}/tutorias/availability/${slotId}/`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) throw new Error('Failed to delete availability');
+        return await response.json();
+    },
+
+    updateTutorAvailability: async (slotId, data) => {
+        const response = await fetch(`${API_URL}/tutorias/availability/${slotId}/`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Failed to update availability');
+        return await response.json();
+    },
+
+    // ============================================
+    // SCRUM-46: Cancel and Reschedule
+    // ============================================
+    cancelSession: async (sessionId) => {
+        const response = await fetch(`${API_URL}/tutorias/sessions/${sessionId}/cancel/`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        if (!response.ok) throw new Error('Failed to cancel session');
+        return await response.json();
+    },
+
+    rescheduleSession: async (sessionId, data) => {
+        const response = await fetch(`${API_URL}/tutorias/sessions/${sessionId}/reschedule/`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Failed to reschedule session');
+        return await response.json();
+    },
+
+    // ============================================
+    // SCRUM-37: Student Progress
+    // ============================================
+    getStudentProgress: async (studentId) => {
+        const response = await fetch(`${API_URL}/tutorias/progress/student/${studentId}/`);
+        if (!response.ok) throw new Error('Failed to fetch student progress');
+        return await response.json();
+    },
+
+    // ============================================
+    // SCRUM-32: Student Questionnaire
+    // ============================================
+    getQuestionnaires: async () => {
+        const response = await fetch(`${API_URL}/cuestionarios/questionnaires/`);
+        if (!response.ok) throw new Error('Failed to fetch questionnaires');
+        return await response.json();
+    },
+
+    submitQuestionnaire: async (data) => {
+        const response = await fetch(`${API_URL}/cuestionarios/questionnaires/submit/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Failed to submit questionnaire');
         return await response.json();
     }
 };
