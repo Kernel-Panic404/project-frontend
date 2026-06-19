@@ -8,6 +8,8 @@ export const TutorSchedule = () => {
     const [selectedDay, setSelectedDay] = useState(null);
     const [newSlot, setNewSlot] = useState({ start: '', end: '', maxCapacity: 5 });
     const [loading, setLoading] = useState(false);
+    const [editMode, setEditMode] = useState(null);
+    const [editSlot, setEditSlot] = useState({ start: '', end: '', maxCapacity: 5 });
 
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -60,6 +62,40 @@ export const TutorSchedule = () => {
         } catch (error) {
             console.error('Error deleting schedule:', error);
             alert('Error deleting schedule');
+        }
+    };
+
+    const startEdit = (slot) => {
+        setEditMode(slot.id);
+        setEditSlot({
+            start: slot.start_time,
+            end: slot.end_time,
+            maxCapacity: slot.max_capacity || 5
+        });
+    };
+
+    const cancelEdit = () => {
+        setEditMode(null);
+        setEditSlot({ start: '', end: '', maxCapacity: 5 });
+    };
+
+    const saveEdit = async (slotId) => {
+        if (!editSlot.start || !editSlot.end) {
+            alert('Please select start and end time');
+            return;
+        }
+        try {
+            await api.updateTutorAvailability(slotId, {
+                start_time: editSlot.start,
+                end_time: editSlot.end,
+                max_capacity: editSlot.maxCapacity
+            });
+            await loadSchedule();
+            cancelEdit();
+            alert('Schedule updated successfully');
+        } catch (error) {
+            console.error('Error updating schedule:', error);
+            alert('Error updating schedule');
         }
     };
 
@@ -140,37 +176,138 @@ export const TutorSchedule = () => {
 
                             {daySchedule.map(slot => (
                                 <div key={slot.id} style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
                                     background: 'rgba(255, 255, 255, 0.05)',
                                     padding: '0.5rem',
                                     borderRadius: '8px',
                                     marginBottom: '0.5rem',
                                     fontSize: '0.85rem'
                                 }}>
-                                    <div>
-                                        <div style={{ color: '#94A3B8' }}>
-                                            🕐 {slot.start_time} - {slot.end_time}
+                                    {editMode === slot.id ? (
+                                        <div>
+                                            <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '0.25rem' }}>
+                                                <input 
+                                                    type="time"
+                                                    value={editSlot.start}
+                                                    onChange={e => setEditSlot({...editSlot, start: e.target.value})}
+                                                    style={{
+                                                        flex: 1,
+                                                        background: 'rgba(15, 23, 42, 0.6)',
+                                                        border: '1px solid var(--border-color)',
+                                                        color: 'white',
+                                                        borderRadius: '4px',
+                                                        padding: '0.25rem',
+                                                        fontSize: '0.8rem'
+                                                    }}
+                                                />
+                                                <input 
+                                                    type="time"
+                                                    value={editSlot.end}
+                                                    onChange={e => setEditSlot({...editSlot, end: e.target.value})}
+                                                    style={{
+                                                        flex: 1,
+                                                        background: 'rgba(15, 23, 42, 0.6)',
+                                                        border: '1px solid var(--border-color)',
+                                                        color: 'white',
+                                                        borderRadius: '4px',
+                                                        padding: '0.25rem',
+                                                        fontSize: '0.8rem'
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '0.25rem' }}>
+                                                <input 
+                                                    type="number"
+                                                    value={editSlot.maxCapacity}
+                                                    onChange={e => setEditSlot({...editSlot, maxCapacity: parseInt(e.target.value)})}
+                                                    min="1"
+                                                    style={{
+                                                        flex: 1,
+                                                        background: 'rgba(15, 23, 42, 0.6)',
+                                                        border: '1px solid var(--border-color)',
+                                                        color: 'white',
+                                                        borderRadius: '4px',
+                                                        padding: '0.25rem',
+                                                        fontSize: '0.8rem'
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '0.25rem' }}>
+                                                <button 
+                                                    onClick={() => saveEdit(slot.id)}
+                                                    style={{
+                                                        flex: 1,
+                                                        background: 'rgba(52, 211, 153, 0.3)',
+                                                        color: '#34D399',
+                                                        border: 'none',
+                                                        borderRadius: '4px',
+                                                        padding: '0.25rem',
+                                                        cursor: 'pointer',
+                                                        fontSize: '0.7rem'
+                                                    }}
+                                                >
+                                                    💾 Save
+                                                </button>
+                                                <button 
+                                                    onClick={cancelEdit}
+                                                    style={{
+                                                        flex: 1,
+                                                        background: 'rgba(248, 113, 113, 0.2)',
+                                                        color: '#F87171',
+                                                        border: 'none',
+                                                        borderRadius: '4px',
+                                                        padding: '0.25rem',
+                                                        cursor: 'pointer',
+                                                        fontSize: '0.7rem'
+                                                    }}
+                                                >
+                                                    ❌ Cancel
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div style={{ color: '#818CF8', fontSize: '0.75rem' }}>
-                                            👥 {slot.available_slots || 0}/{slot.max_capacity || 5}
+                                    ) : (
+                                        <div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <div>
+                                                    <div style={{ color: '#94A3B8' }}>
+                                                        🕐 {slot.start_time} - {slot.end_time}
+                                                    </div>
+                                                    <div style={{ color: '#818CF8', fontSize: '0.75rem' }}>
+                                                        👥 {slot.available_slots || 0}/{slot.max_capacity || 5}
+                                                    </div>
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '0.25rem' }}>
+                                                    <button 
+                                                        onClick={() => startEdit(slot)}
+                                                        style={{
+                                                            background: 'rgba(251, 191, 36, 0.2)',
+                                                            color: '#FBBF24',
+                                                            border: 'none',
+                                                            borderRadius: '4px',
+                                                            padding: '0.25rem 0.5rem',
+                                                            cursor: 'pointer',
+                                                            fontSize: '0.7rem'
+                                                        }}
+                                                    >
+                                                        ✏️
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => deleteTimeSlot(slot.id)}
+                                                        style={{
+                                                            background: 'rgba(248, 113, 113, 0.2)',
+                                                            color: '#F87171',
+                                                            border: 'none',
+                                                            borderRadius: '4px',
+                                                            padding: '0.25rem 0.5rem',
+                                                            cursor: 'pointer',
+                                                            fontSize: '0.7rem'
+                                                        }}
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <button 
-                                        onClick={() => deleteTimeSlot(slot.id)}
-                                        style={{
-                                            background: 'rgba(248, 113, 113, 0.2)',
-                                            color: '#F87171',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            padding: '0.25rem 0.5rem',
-                                            cursor: 'pointer',
-                                            fontSize: '0.8rem'
-                                        }}
-                                    >
-                                        ✕
-                                    </button>
+                                    )}
                                 </div>
                             ))}
 
