@@ -1,16 +1,18 @@
-import { useState } from 'react';
-import { authService } from '../services/authService';
+import { useState } from "react";
+import { authService } from "../services/authService";
+import logo from "../assets/mentora-logo.png";
+import "./Login.css";
 
 function Login({ onLogin }) {
-    const [correo, setCorreo] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [correo, setCorreo] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setError('');
+        setError("");
         setLoading(true);
 
         try {
@@ -24,66 +26,60 @@ function Login({ onLogin }) {
     };
 
     return (
-        <div
-            style={{
-                maxWidth: '400px',
-                margin: '50px auto',
-                padding: '20px',
-                border: '1px solid #ddd',
-                borderRadius: '10px'
-            }}
-        >
-            <h2>Iniciar Sesión</h2>
+        <div className="login-page">
+            <div className="login-card">
 
-            {error && (
-                <p style={{ color: 'red' }}>
-                    {error}
-                </p>
-            )}
+                <img
+                    src={logo}
+                    alt="Mentora"
+                    className="login-logo"
+                />
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Correo</label>
-                    <input
-                        type="email"
-                        value={correo}
-                        onChange={(e) => setCorreo(e.target.value)}
-                        required
-                        style={{
-                            width: '100%',
-                            padding: '8px',
-                            marginTop: '5px'
-                        }}
-                    />
-                </div>
+                <h1>Iniciar Sesión</h1>
 
-                <div style={{ marginTop: '15px' }}>
-                    <label>Contraseña</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        style={{
-                            width: '100%',
-                            padding: '8px',
-                            marginTop: '5px'
-                        }}
-                    />
-                </div>
+                {error && (
+                    <div className="login-error">
+                        {error}
+                    </div>
+                )}
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    style={{
-                        width: '100%',
-                        marginTop: '20px',
-                        padding: '10px'
-                    }}
-                >
-                    {loading ? 'Ingresando...' : 'Ingresar'}
-                </button>
-            </form>
+                <form onSubmit={handleSubmit}>
+
+                    <div className="input-group">
+                        <label>Correo</label>
+
+                        <input
+                            type="email"
+                            value={correo}
+                            onChange={(e) => setCorreo(e.target.value)}
+                            placeholder="correo@unal.edu.co"
+                            required
+                        />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Contraseña</label>
+
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="••••••••"
+                            required
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="login-button"
+                        disabled={loading}
+                    >
+                        {loading ? "Ingresando..." : "Ingresar"}
+                    </button>
+
+                </form>
+
+            </div>
         </div>
     );
 }
