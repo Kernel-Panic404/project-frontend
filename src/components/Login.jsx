@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authService } from "../services/authService";
 import logo from "../assets/mentora-logo.png";
 import "./Login.css";
@@ -6,8 +6,29 @@ import "./Login.css";
 function Login({ onLogin }) {
     const [correo, setCorreo] = useState("");
     const [password, setPassword] = useState("");
+    const [rol, setRol] = useState("");
+
+    const [roles, setRoles] = useState([]);
+
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const cargarRoles = async () => {
+            try {
+                const data = await authService.getRoles();
+                setRoles(data);
+
+                if (data.length > 0) {
+                    setRol(data[0].nombre);
+                }
+            } catch (err) {
+                setError("No fue posible cargar los roles.");
+            }
+        };
+
+        cargarRoles();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -16,7 +37,12 @@ function Login({ onLogin }) {
         setLoading(true);
 
         try {
-            await authService.login(correo, password);
+            await authService.login(
+                correo,
+                password,
+                rol
+            );
+
             onLogin();
         } catch (err) {
             setError(err.message);
@@ -51,7 +77,9 @@ function Login({ onLogin }) {
                         <input
                             type="email"
                             value={correo}
-                            onChange={(e) => setCorreo(e.target.value)}
+                            onChange={(e) =>
+                                setCorreo(e.target.value)
+                            }
                             placeholder="correo@unal.edu.co"
                             required
                         />
@@ -63,10 +91,33 @@ function Login({ onLogin }) {
                         <input
                             type="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) =>
+                                setPassword(e.target.value)
+                            }
                             placeholder="••••••••"
                             required
                         />
+                    </div>
+
+                    <div className="input-group">
+                        <label>Rol</label>
+
+                        <select
+                            value={rol}
+                            onChange={(e) =>
+                                setRol(e.target.value)
+                            }
+                            required
+                        >
+                            {roles.map((item) => (
+                                <option
+                                    key={item.id}
+                                    value={item.nombre}
+                                >
+                                    {item.nombre}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     <button
@@ -74,7 +125,9 @@ function Login({ onLogin }) {
                         className="login-button"
                         disabled={loading}
                     >
-                        {loading ? "Ingresando..." : "Ingresar"}
+                        {loading
+                            ? "Ingresando..."
+                            : "Ingresar"}
                     </button>
 
                 </form>
