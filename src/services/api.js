@@ -1,29 +1,68 @@
 const API_URL = 'http://localhost:8000/api';
 
+const getHeaders = () => ({
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('access_token')}`
+});
+
 export const api = {
+<<<<<<< HEAD
     // ============================================
     // EXISTING METHODS
     // ============================================
     getTutors: async () => {
         const response = await fetch(`${API_URL}/users/`);
         if (!response.ok) throw new Error('Failed to fetch tutors');
+=======
+    getTutors: async () => {
+        const response = await fetch(`${API_URL}/users/`, {
+            headers: getHeaders()
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch tutors');
+        }
+
+>>>>>>> 80c258e5c0ef125c02c93f5902f8f436e1246395
         const users = await response.json();
-        return users.filter(u => u.rol && u.rol.nombre === 'tutor');
+
+        return users.filter(
+            user => user.rol && user.rol.nombre === 'tutor'
+        );
     },
 
     getSubjects: async () => {
-        const response = await fetch(`${API_URL}/tutorias/subjects/`);
-        if (!response.ok) throw new Error('Failed to fetch subjects');
+        const response = await fetch(
+            `${API_URL}/tutorias/subjects/`,
+            {
+                headers: getHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch subjects');
+        }
+
         return await response.json();
     },
 
     getAvailability: async () => {
-        const response = await fetch(`${API_URL}/tutorias/availability/`);
-        if (!response.ok) throw new Error('Failed to fetch availability');
+        const response = await fetch(
+            `${API_URL}/tutorias/availability/`,
+            {
+                headers: getHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch availability');
+        }
+
         return await response.json();
     },
 
     scheduleSession: async (sessionData) => {
+<<<<<<< HEAD
         const response = await fetch(`${API_URL}/tutorias/sessions/`, {
             method: 'POST',
             headers: {
@@ -32,32 +71,70 @@ export const api = {
             body: JSON.stringify(sessionData)
         });
         if (!response.ok) throw new Error('Failed to schedule session');
+=======
+        const response = await fetch(
+            `${API_URL}/tutorias/sessions/`,
+            {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify(sessionData)
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to schedule session');
+        }
+
+>>>>>>> 80c258e5c0ef125c02c93f5902f8f436e1246395
         return await response.json();
     },
 
     postSessionRecord: async (recordData) => {
-        const response = await fetch(`${API_URL}/tutorias/session-records/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(recordData)
-        });
-        if (!response.ok) throw new Error('Failed to create session record');
+        const response = await fetch(
+            `${API_URL}/tutorias/session-records/`,
+            {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify(recordData)
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to create session record');
+        }
+
         return await response.json();
     },
 
     postAttendance: async (attendanceData) => {
-        const response = await fetch(`${API_URL}/tutorias/attendance/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(attendanceData)
-        });
-        if (!response.ok) throw new Error('Failed to record attendance');
+        const response = await fetch(
+            `${API_URL}/tutorias/attendance/`,
+            {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify(attendanceData)
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to record attendance');
+        }
+
         return await response.json();
     },
 
     getStudentHistory: async (studentId) => {
-        const response = await fetch(`${API_URL}/tutorias/history/student/${studentId}/`);
-        if (!response.ok) throw new Error('Failed to fetch student history');
+        const response = await fetch(
+            `${API_URL}/tutorias/history/student/${studentId}/`,
+            {
+                headers: getHeaders()
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch student history');
+        }
+
         return await response.json();
     },
 
